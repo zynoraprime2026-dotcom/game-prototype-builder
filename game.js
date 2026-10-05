@@ -117,6 +117,7 @@ document.getElementById("f-scene").addEventListener("submit", async (e) => {
         body: JSON.stringify({ title, narrative, choices: readChoices() }),
       });
       setStatus(d.note === "this is the start scene" ? "Scene added ✓ — this is your start scene" : "Scene added ✓", "ok");
+    }
     document.getElementById("f-scene").reset();
     choicesEl.innerHTML = "";
     await loadGame();
