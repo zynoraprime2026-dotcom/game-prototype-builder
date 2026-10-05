@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Prototype Builder — My Games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Al-Haqq Digital</div>
+  <h1>Game Prototype Builder</h1>
+  <p class="sub">Design branching story games — scenes, choices, AI scene art — build, map, and play.</p>
+  <div class="gold-rule"></div>
+
+  <div class="panel">
+    <h2>Create a Game</h2>
+    <form id="f-create">
+      <label for="g-title">Title</label>
+      <input type="text" id="g-title" placeholder="The Gold of Tarkwa" maxlength="120" required>
+      <label for="g-genre">Genre</label>
+      <input type="text" id="g-genre" placeholder="Adventure" maxlength="60">
+      <label for="g-desc">Description</label>
+      <textarea id="g-desc" placeholder="What is this game about?"></textarea>
+      <div style="margin-top:16px">
+        <button type="submit" id="btn-create">Create Game</button>
+      </div>
+    </form>
+    <div class="status" id="status"></div>
+    <div class="status" id="busy" style="display:none;color:var(--muted)"></div>
+  </div>
+
+  <h2 style="font-family:Georgia,serif;font-weight:400;font-size:20px;margin-bottom:14px">My Games</h2>
+  <div class="grid" id="games"></div>
+  <div class="empty" id="games-empty" style="display:none">No games yet — create your first one above.</div>
+</div>
+
+<footer>Powered by <b>Zynora AI</b> · Studio API</footer>
+<script src="api.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
