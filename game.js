@@ -53,8 +53,14 @@ document.getElementById("btn-edit").addEventListener("click", async () => {
   } catch (err) { showErr(err); }
 });
 
-document.getElementById("btn-delete").addEventListener("click", async () => {
-  if (!confirm("Delete this game and all its scenes?")) return;
+const btnDelGame = document.getElementById("btn-delete");
+btnDelGame.addEventListener("click", async () => {
+  if (btnDelGame.dataset.confirming !== "1") {
+    btnDelGame.dataset.confirming = "1";
+    btnDelGame.textContent = "Confirm delete?";
+    setTimeout(() => { btnDelGame.dataset.confirming = ""; btnDelGame.textContent = "Delete"; }, 3000);
+    return;
+  }
   try {
     await call("/v1/games/" + GID, { method: "DELETE" });
     location.href = "index.html";
@@ -125,6 +131,11 @@ document.getElementById("f-scene").addEventListener("submit", async (e) => {
   btn.disabled = false; btn.textContent = editingSceneId ? "Save Scene" : "Add Scene";
 });
 
+async function del(path) {
+  try { await call(path, { method: "DELETE" }); await loadGame(); }
+  catch (err) { showErr(err); }
+}
+
 /* ---------- scene list ---------- */
 let editingSceneId = null;
 
@@ -188,10 +199,15 @@ function sceneCard(s) {
     } catch (err) { showErr(err); }
   });
 
-  div.querySelector("[data-del]").addEventListener("click", async () => {
-    if (!confirm("Delete scene “" + s.title + "”?")) return;
-    try { await call(`/v1/games/${GID}/scenes/${s.id}`, { method: "DELETE" }); loadGame(); }
-    catch (err) { showErr(err); }
+  const delBtn = div.querySelector("[data-del]");
+  delBtn.addEventListener("click", () => {
+    if (delBtn.dataset.confirming !== "1") {
+      delBtn.dataset.confirming = "1";
+      delBtn.textContent = "Confirm delete?";
+      setTimeout(() => { delBtn.dataset.confirming = ""; delBtn.textContent = "Delete"; }, 3000);
+      return;
+    }
+    del("/v1/games/" + GID + "/scenes/" + s.id);
   });
   return div;
 }

@@ -45,10 +45,15 @@ async function loadGames() {
           <button class="danger" data-del>Delete</button>
         </div>`;
       card.querySelector("[data-open]").onclick = () => { location.href = "game.html?id=" + g.id; };
-      card.querySelector("[data-del]").onclick = async () => {
-        if (!confirm("Delete “" + g.title + "” and all its scenes?")) return;
-        try { await call("/v1/games/" + g.id, { method: "DELETE" }); loadGames(); }
-        catch (err) { showErr(err); }
+      const del = card.querySelector("[data-del]");
+      del.onclick = () => {
+        if (del.dataset.confirming !== "1") {
+          del.dataset.confirming = "1";
+          del.textContent = "Confirm delete?";
+          setTimeout(() => { del.dataset.confirming = ""; del.textContent = "Delete"; }, 3000);
+          return;
+        }
+        call("/v1/games/" + g.id, { method: "DELETE" }).then(loadGames).catch(showErr);
       };
       grid.appendChild(card);
     }
