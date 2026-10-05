@@ -101,14 +101,22 @@ document.getElementById("f-scene").addEventListener("submit", async (e) => {
   const narrative = document.getElementById("s-narr").value.trim();
   if (!title || !narrative) return;
   const btn = document.getElementById("btn-scene");
-  btn.disabled = true; btn.textContent = "Adding…";
+  btn.disabled = true; btn.textContent = editingSceneId ? "Saving…" : "Adding…";
   try {
-    const d = await call(`/v1/games/${GID}/scenes`, {
-      method: "POST",
-      body: JSON.stringify({ title, narrative, choices: readChoices() }),
-    });
-    if (editingSceneId) { setStatus("Scene updated ✓", "ok"); cancelEdit(); }
-    else setStatus(d.note === "this is the start scene" ? "Scene added ✓ — this is your start scene" : "Scene added ✓", "ok");
+    if (editingSceneId) {
+      /* editing an existing scene: update it, never create a copy */
+      await call(`/v1/games/${GID}/scenes/${editingSceneId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ title, narrative, choices: readChoices() }),
+      });
+      setStatus("Scene updated ✓", "ok");
+      cancelEdit();
+    } else {
+      const d = await call(`/v1/games/${GID}/scenes`, {
+        method: "POST",
+        body: JSON.stringify({ title, narrative, choices: readChoices() }),
+      });
+      setStatus(d.note === "this is the start scene" ? "Scene added ✓ — this is your start scene" : "Scene added ✓", "ok");
     document.getElementById("f-scene").reset();
     choicesEl.innerHTML = "";
     await loadGame();
